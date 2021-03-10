@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "559816467015",
+    "firebase_url": "https://database-for-kmel.firebaseio.com",
+    "project_id": "database-for-kmel",
+    "storage_bucket": "database-for-kmel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559816467015:android:68b3a1d8111034eca10762",
+        "android_client_info": {
+          "package_name": "com.myexample.kmel_b_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5hDQh-Pd69FyZHkKE8IlV_L2s-qDzWE4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "559816467015-5pe75qb0jm1mpir81thkjf9ldtb0lers.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.myexample.kmelBApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559816467015:android:0786b72ddefdd317a10762",
+        "android_client_info": {
+          "package_name": "com.myexample.kmel_side_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5hDQh-Pd69FyZHkKE8IlV_L2s-qDzWE4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "559816467015-5pe75qb0jm1mpir81thkjf9ldtb0lers.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.myexample.kmelBApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
