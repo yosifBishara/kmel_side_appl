@@ -1,6 +1,7 @@
 # kmel_side_app
 
 A new Flutter application.
+Admin side appointment management application, developed and sold for a local barber shop.
 
 ## Getting Started
 
