@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kmel_side_app/date_for_view_page.dart';
 import 'package:kmel_side_app/fire_s.dart';
 import 'package:flutter_sms/flutter_sms.dart';
+import 'package:kmel_side_app/constants.dart';
 
-
-// Map<String, dynamic> _selections = {};
 Map<String, bool> _selectionsX = {};
 
 class AppView extends StatefulWidget {
@@ -15,69 +15,14 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-  // List<bool> mySelect = selected ;
   List<String> _recipients = [];
   int i = -1;
   static bool firstTime = true;
   Map<String, bool> selectMap = Map<String, bool>();
   FireHelper db = FireHelper();
   DateTime today = DateTime.now();
-  String toDay = '${DateTime
-      .now()
-      .day}/${DateTime
-      .now()
-      .month}/${DateTime
-      .now()
-      .year}';
-  List<String> weekDays = [
-    'ראשון',
-    ' ',
-    'שלישי',
-    'רביעי',
-    'חמישי',
-    'שישי',
-    'שבת',
-    'ראשון',
-    ' ',
-    'שלישי',
-    'רביעי',
-    'חמישי',
-    'שישי',
-    'שבת'
-  ];
-  String emergencyExitMessage = "קמיל בשארה - הודעה חשובה!" + "\n"
-      + "الزبون الكريم, سيتم اغلاق الصالون حتى نهاية اليوم لاسباب ضرورية." +
-      "\n"
-      + "للاسف, تم الغاء دورك ويجب عليك حجز دور جديد." + "\n"
-      + "اذا وصلك تذكير للدور الملغي الرجاء تجاهلا." + "\n"
-      + "المعذرة." + "\n" + "   ----------    " + "\n"
-      + "לקוח יקר, הסלון ייסגר לסיבות דחופות היום מהשעה הנוכחית עד סוף היום." +
-      "\n"
-      + "לצערנו, התור שלך מבוטל והינך דרוש לקבוע תור מחדש." + "\n"
-      + "נא להתעלם מכל תזכורת ששייכת לתור שבוטל." + "\n"
-      "עמכם הסליחה.";
-  String partialExit = "קמיל בשארה - הודעה חשובה!" + "\n"
-      + "الزبون الكريم, سيتم اغلاق الصالون خلال ساعة حجزك لاسباب ضرورية." + "\n"
-      + "للاسف, تم الغاء دورك ويجب عليك حجز دور جديد." + "\n"
-      + "اذا وصلك تذكير للدور الملغي الرجاء تجاهله." + "\n"
-      + "المعذرة." + "\n" + "   ----------    " + "\n"
-      + "לקוח יקר, הסלון ייסגר לסיבות דחופות היום בשעה שקבעת לתורך." + "\n"
-      + "לצערנו, התור שלך מבוטל והינך דרוש לקבוע תור מחדש." + "\n"
-      + "נא להתעלם מכל תזכורת ששייכת לתור שבוטל." + "\n"
-      "עמכם הסליחה.";
-
-
-  // Future<List<bool>> mmmmFunction() async{
-  //   mySelect=[];
-  //   int docs_num_today = await db.initSelectedNum();
-  //
-  //   for(int i=0 ; i < docs_num_today ; i++){
-  //     mySelect.add(false);
-  //     print(i);
-  //   }
-  //   return mySelect;
-  // }
-
+  // toDay holds the dates that the of which the appointments will be displayed to the salon.
+  String toDay = selectedDate;
 
   void _sendSMS(String message, List<String> recipents) async {
     String _result = await FlutterSms.sendSMS(
@@ -190,13 +135,13 @@ class _AppViewState extends State<AppView> {
 
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[800],
       appBar: AppBar(
         backgroundColor: Colors.black,
         // automaticallyImplyLeading: false,
-        title: Center(child: Text('$toDay - ${weekDays[today.weekday] != ' '
-            ? weekDays[today.weekday]
+        title: Center(child: Text('$toDay - ${weekDays[selectedWeekday] != ' '
+            ? weekDays[selectedWeekday]
             : 'שני' }')),
         actions: [
           IconButton(
@@ -208,23 +153,7 @@ class _AppViewState extends State<AppView> {
             },
           )
         ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //send messages to all appointments left today,
-          //go to home page
-          showAlertDialog(context);
-          //_sendSMS(emergencyExitMessage, recipients);
-        },
-        backgroundColor: Colors.black54,
-        child: Padding(
-          padding: const EdgeInsets.all(1),
-          child: Center(child: Text('סיים \n יום')),
-        ),
-
-
-      ),
+       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('appointments').where(
             "date", isEqualTo: toDay).snapshots(),
@@ -254,15 +183,12 @@ class _AppViewState extends State<AppView> {
 
             for (int i = 0; i < myDocs.length; i++) {
               if (_selectionsX.containsKey(myDocs[i].id) == false) {
-                // _selections[myDocs[i].id] =
-                //     StreamCard(docc: myDocs[i], recc: recipients,);
                 _selectionsX[myDocs[i].id] = false;
               }
               if(_selectionsX[myDocs[i].id] && !_recipients.contains(myDocs[i].id)){
                 _recipients.add(myDocs[i].id);
               }
             }
-            // print(_selectionsX);
 
 
             return ListView(
