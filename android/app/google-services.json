@@ -1,80 +1,45 @@
 {
   "project_info": {
-    "project_number": "559816467015",
-    "firebase_url": "https://database-for-kmel.firebaseio.com",
-    "project_id": "database-for-kmel",
-    "storage_bucket": "database-for-kmel.appspot.com"
+    "project_number": "76921127338",
+    "project_id": "kmel-app-db",
+    "storage_bucket": "kmel-app-db.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:559816467015:android:68b3a1d8111034eca10762",
+        "mobilesdk_app_id": "1:76921127338:android:603e012bc8d81b1b312bd3",
         "android_client_info": {
           "package_name": "com.myexample.kmel_b_app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5hDQh-Pd69FyZHkKE8IlV_L2s-qDzWE4"
+          "current_key": "AIzaSyC1--AvdR8N-mQTojyP_F36gKQ8gYOv_V0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "559816467015-5pe75qb0jm1mpir81thkjf9ldtb0lers.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.myexample.kmelBApp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:559816467015:android:0786b72ddefdd317a10762",
+        "mobilesdk_app_id": "1:76921127338:android:798e05a0c34aa1fe312bd3",
         "android_client_info": {
           "package_name": "com.myexample.kmel_side_app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5hDQh-Pd69FyZHkKE8IlV_L2s-qDzWE4"
+          "current_key": "AIzaSyC1--AvdR8N-mQTojyP_F36gKQ8gYOv_V0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "559816467015-sta2sgsv5avvj8vntan7hg0om6bo02lq.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "559816467015-5pe75qb0jm1mpir81thkjf9ldtb0lers.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.myexample.kmelBApp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kmel_side_app/Appointment.dart';
 import 'package:kmel_side_app/date_for_view_page.dart';
-import 'package:kmel_side_app/fire_s.dart';
+import 'firestoreClient.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:kmel_side_app/constants.dart';
 
@@ -15,95 +15,39 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-  List<String> _recipients = [];
+  List<Appointment> _recipients = [];
   int i = -1;
-  static bool firstTime = true;
   Map<String, bool> selectMap = Map<String, bool>();
-  FireHelper db = FireHelper();
   DateTime today = DateTime.now();
   // toDay holds the dates that the of which the appointments will be displayed to the salon.
   String toDay = selectedDate;
 
-  void _sendSMS(String message, List<String> recipents) async {
-    String _result = await FlutterSms.sendSMS(
-        message: message, recipients: recipents)
+  void _sendSMS(String message, List recipients) async {
+    await FlutterSms.sendSMS(
+        message: message, recipients: recipients as List<String>)
         .catchError((onError) {
       print(onError);
     });
   }
 
-  showAlertDialog(BuildContext context) async {
-    //2 buttons
-    Widget yesButton = FlatButton(
-      child: Text('כן'),
-      onPressed: () async {
-        Navigator.pushNamed(context, '/load');
-        _recipients.clear();
-        QuerySnapshot res = await FirebaseFirestore.instance.collection(
-            'appointments').where('date', isEqualTo: toDay).get();
-        List<DocumentSnapshot> docs = res.docs;
-        for (int i = 0; i < docs.length; i++) {
-          DateTime currTime = DateTime(today.year, today.month, today.day,
-              int.parse(docs[i].get('time')[0].toString().split(':')[0]),
-              int.parse(docs[i].get('time')[0].toString().split(':')[1]));
-          if (currTime.isAfter(today)) {
-            _recipients.add(docs[i].id);
-          }
-          // await db.deleteApp(docs[i].id);
-        }
-        Navigator.of(context).pop();
-        _sendSMS(emergencyExitMessage, _recipients);
-        Navigator.pushNamed(context, '/home');
-        for (int i = 0; i < docs.length; i++) {
-          await db.deleteApp(docs[i].id);
-        }
-      },
-    );
-
-    Widget noButton = FlatButton(
-      child: Text('לא'),
-      onPressed: () {
-        Navigator.pushNamed(context, '/view');
-      },
-    );
-
-    //alert dialog
-    AlertDialog alert = AlertDialog(
-      title: Text("!שים לב"),
-      content: Text(
-          'האם אתה בטוח!!'
-      ),
-      actions: [
-        yesButton,
-        noButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
   showAlertD(BuildContext context) async {
-    Widget yesButton = FlatButton(
+    Widget yesButton = TextButton(
       child: Text('כן'),
       onPressed: () async {
-        _sendSMS(partialExit, _recipients);
-        print(_recipients);
+        List<String> recipientsNums = [];
+        for (Appointment r in _recipients) {
+          recipientsNums.add(r.number);
+        }
+        _sendSMS(partialExit, recipientsNums);
         while(_recipients.length != 0) {
-          await db.deleteApp(_recipients[0]);
-          // print(i);
-          print(_recipients);
+          await fsc.deleteAppointment(_recipients[0]);
         }
         _recipients.clear();
         Navigator.pushNamed(context, '/home');
       },
     );
 
-    Widget noButton = FlatButton(
+    Widget noButton = TextButton(
       child: Text('לא'),
       onPressed: () {
         Navigator.of(context).pop();
@@ -131,8 +75,6 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    // print(mySelect);
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -155,8 +97,10 @@ class _AppViewState extends State<AppView> {
         ],
        ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('appointments').where(
-            "date", isEqualTo: toDay).snapshots(),
+        stream: FirebaseFirestore.instance.collection(FireStoreArg.APPOINTMENTS_COLLECTION_ID)
+            .doc(selectedDate)
+            .collection(FireStoreArg.DAY_APPOINTMENTS_COLLECTION)
+            .snapshots(),
         // ignore: missing_return
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -173,20 +117,27 @@ class _AppViewState extends State<AppView> {
             List<QueryDocumentSnapshot> myDocs = snapshot.data.docs;
 
             myDocs.sort((a, b) {
-              int a_hour = int.parse(a.get('time')[0].toString().split(':')[0]),
-                  a_min = int.parse(a.get('time')[0].toString().split(':')[1]),
-                  b_hour = int.parse(b.get('time')[0].toString().split(':')[0]),
-                  b_min = int.parse(b.get('time')[0].toString().split(':')[1]);
-              print(myDocs.length);
-              return a_hour - b_hour == 0 ? a_min - b_min : a_hour - b_hour;
+              int aHour = int.parse(a.id.toString().split(':')[0]),
+                  aMin = int.parse(a.id.toString().split(':')[1]),
+                  bHour = int.parse(b.id.toString().split(':')[0]),
+                  bMin = int.parse(b.id.toString().split(':')[1]);
+              return aHour - bHour == 0 ? aMin - bMin : aHour - bHour;
             });
 
             for (int i = 0; i < myDocs.length; i++) {
-              if (_selectionsX.containsKey(myDocs[i].id) == false) {
-                _selectionsX[myDocs[i].id] = false;
+              if (_selectionsX.containsKey(myDocs[i].get(FireStoreArg.PHONE_NUM_FIELD)) == false) {
+                _selectionsX[myDocs[i].get(FireStoreArg.PHONE_NUM_FIELD)] = false;
               }
-              if(_selectionsX[myDocs[i].id] && !_recipients.contains(myDocs[i].id)){
-                _recipients.add(myDocs[i].id);
+              if(_selectionsX[myDocs[i].get(FireStoreArg.PHONE_NUM_FIELD)] && !_recipients.contains(myDocs[i].id)){
+                // _recipients.add(myDocs[i].id);
+                _recipients.add(Appointment(
+                    myDocs[i].get(FireStoreArg.NAME_FIELD),
+                    myDocs[i].get(FireStoreArg.PHONE_NUM_FIELD),
+                    selectedDate,
+                    myDocs[i].get(FireStoreArg.DAY_FIELD),
+                    1,
+                    [ myDocs[i].id ]
+                ));
               }
             }
 
@@ -204,35 +155,39 @@ class _AppViewState extends State<AppView> {
                         .width * 0.015),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Checkbox(
                         tristate: false,
-                        value: _selectionsX[document.id] ,
+                        value: _selectionsX[document.get(FireStoreArg.PHONE_NUM_FIELD)],
                         onChanged: (bool e) {
                           setState(() {
-                            _selectionsX[document.id] = !(_selectionsX[document.id]);
+                            _selectionsX[document.get(FireStoreArg.PHONE_NUM_FIELD)] = !(_selectionsX[document.get(FireStoreArg.PHONE_NUM_FIELD)]);
                             if (e) {
-                              if(_recipients.contains(document.id) == false) {
-                                _recipients.add(document.id);
+                              if(_recipients.contains(document.get(FireStoreArg.PHONE_NUM_FIELD)) == false) {
+                                _recipients.add(Appointment(
+                                    document.get(FireStoreArg.NAME_FIELD),
+                                    document.get(FireStoreArg.PHONE_NUM_FIELD),
+                                    selectedDate,
+                                    document.get(FireStoreArg.DAY_FIELD),
+                                    1,
+                                    [document.id]
+                                ));
                               }
                             } else {
-                              _recipients.remove(document.id);
+                              _recipients.removeWhere(
+                                      (element) => (element.number == document.get(FireStoreArg.PHONE_NUM_FIELD)
+                                      )
+                              );
                             }
-                            print(_recipients);
                           });
                         },
                       ),
-                      SizedBox(width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.55,),
+
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 2, 8, 2),
                         child: Text(
-                          '${document.get('name')} \n ${document
-                              .id} \n ${document.get('time')[0]} \n ${document
-                              .get('persons')} אנשים  ',
+                          '${document.get(FireStoreArg.NAME_FIELD)} \n ${document.get(FireStoreArg.PHONE_NUM_FIELD)} \n ${document.id}',
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
                               fontSize: 15

@@ -15,31 +15,6 @@ List<String> weekDays = [
   'שבת'
 ];
 
-List<String> hours = [
-  '13:00',
-  '13:25',
-  '13:50',
-  '14:15',
-  '14:40',
-  '15:05',
-  '15:30',
-  '15:55',
-  '16:20',
-  '16:45',
-  '17:10',
-  '17:35',
-  '18:00',
-  '18:25',
-  '18:50',
-  '19:15',
-  '19:40',
-  '20:05',
-  '20:30',
-  '20:55',
-  '21:20',
-  '21:45'
-];
-
 String emergencyExitMessage = "קמיל בשארה - הודעה חשובה!" + "\n"
     + "الزبون الكريم, سيتم اغلاق الصالون حتى نهاية اليوم لاسباب ضرورية." +
     "\n"
@@ -61,4 +36,43 @@ String partialExit = "קמיל בשארה - הודעה חשובה!" + "\n"
     + "לצערנו, התור שלך מבוטל והינך דרוש לקבוע תור מחדש." + "\n"
     + "נא להתעלם מכל תזכורת ששייכת לתור שבוטל." + "\n"
     "עמכם הסליחה.";
+
+// Firestore
+
+class FireStoreArg {
+  static const APPOINTMENTS_COLLECTION_ID = 'appointments';
+  static const WORK_TIMES_COLLECTION_ID = 'work_times';
+  static const USERS_COLLECTION_ID = 'users';
+  static const APP_UPDATE_INFO_COLLECTION_ID = 'update_info';
+  static const WORK_TIMES_DOC_ID_PREFIX = 'lessEquals-';
+  static const WORK_TIMES_LIST_FIELD = 'times_list';
+  static const UNAVAILABLE_TIMES_FIELD = 'unavailable_times';
+  static const TIME_OFFSET_MIN_FIELD = 'time_offset_min';
+  static const PHONE_NUM_FIELD = 'phone';
+  static const NAME_FIELD = 'name';
+  static const DAY_FIELD = 'day';
+  static const DATE_FIELD = 'date';
+  static const TIME_FIELD = 'time';
+  static const NEXT_APPOINTMENT_FIELD = 'next_appointment';
+  static const APP_UPDATE_CONTENT_DOC = 'updateContent';
+  static const APP_UPDATE_CONTENT_FIELD = 'content';
+  static const APP_UPDATE_ANDROID_FIELD = 'android';
+  static const APP_UPDATE_IOS_FIELD = 'ios';
+  static const APP_UPDATE_TITLE_FIELD = 'title';
+  static const DAY_APPOINTMENTS_COLLECTION = 'day_appointments';
+  static const TIME_ALREADY_TAKEN = 'time taken';
+  static const APPOINTMENT_PASSED = 'appointment passed';
+
+
+}
+
+class UtilConst {
+  static const EMPTY_STRING = '';
+  static const DOT = '.';
+  static const BACK_SLASH = '/';
+  static const List<String> WEEK_DAYS = ['ראשון',' ','שלישי','רביעי','חמישי','שישי','שבת',
+    'ראשון',' ','שלישי','רביעי','חמישי','שישי','שבת'];
+
+
+}
 

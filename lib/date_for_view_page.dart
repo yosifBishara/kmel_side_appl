@@ -6,7 +6,7 @@ class DateForViewPage extends StatefulWidget {
 }
 
 DateTime _dateTime = DateTime.now();
-String selectedDate = '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}';
+String selectedDate = '${_dateTime.day}.${_dateTime.month}.${_dateTime.year}';
 int selectedWeekday = _dateTime.weekday;
 
 class _DateForViewPageState extends State<DateForViewPage> {
@@ -25,13 +25,13 @@ class _DateForViewPageState extends State<DateForViewPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-                _dateTime == null ? 'בחר תאריך להצגת תורים' : '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}',
+                _dateTime == null ? 'בחר תאריך להצגת תורים' : '${_dateTime.day}.${_dateTime.month}.${_dateTime.year}',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 25
                 ),
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text(
                   'פתיחת יומן',
                   style: TextStyle(
@@ -47,13 +47,13 @@ class _DateForViewPageState extends State<DateForViewPage> {
                 ).then((date) {
                   setState(() {
                     _dateTime = date;
-                    selectedDate = '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}';
+                    selectedDate = '${_dateTime.day}.${_dateTime.month}.${_dateTime.year}';
                     selectedWeekday = _dateTime.weekday;
                   });
                 });
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text(
                 'הצג תורים',
                 style: TextStyle(

@@ -1,6 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kmel_side_app/constants.dart';
+import 'package:kmel_side_app/firestoreClient.dart';
+import 'dart:math';
+
+String generateRandomString(int len) {
+  var r = Random();
+  const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!?_-+=*&@#';
+  return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+}
 
 class AddVacation extends StatefulWidget {
   @override
@@ -8,27 +16,26 @@ class AddVacation extends StatefulWidget {
 }
 
 DateTime _dateTime;
-String selectedVacationDate = '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}';
+String selectedVacationDate = '${_dateTime.day}.${_dateTime.month}.${_dateTime.year}';
 int selectedVacationWeekday = _dateTime.weekday;
 
 class _DateForViewPageState extends State<AddVacation> {
 
   deleteAppointmentsOnSelectedVacation() async {
-    QuerySnapshot documents = await FirebaseFirestore.instance.collection('appointments').where('date', isEqualTo: selectedVacationDate).get();
-    for (int i=0 ; i < documents.docs.length ; i++) {
-      await FirebaseFirestore.instance.collection('appointments').doc(documents.docs[i].id).delete();
-    }
+    await fsc.deleteEntireDay(selectedVacationDate);
   }
 
   fillAllVacationAppointments() async {
-    Map<String, dynamic> template = {
-    'name' : 'admin_vacation',
-    'date' : selectedVacationDate,
-    'day' : selectedVacationWeekday,
-    'persons' : 1,
-    'time' : hours
-    };
-    await FirebaseFirestore.instance.collection('appointments').add(template);
+    List workingHours = await fsc.getWorkingTimes(selectedVacationDate);
+    await fsc.makeNewAppointment(
+        'Admin vacation',
+        generateRandomString(10),
+        1,
+        selectedVacationWeekday.toString(),
+        selectedVacationDate,
+        workingHours,
+        isVacation: true
+    );
   }
 
   addVacation () async {
@@ -55,13 +62,13 @@ class _DateForViewPageState extends State<AddVacation> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              _dateTime == null ? 'בחר תאריך ליום חופש' : '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}',
+              _dateTime == null ? 'בחר תאריך ליום חופש' : '${_dateTime.day}.${_dateTime.month}.${_dateTime.year}',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 25
               ),
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text(
                 'פתיחת יומן',
                 style: TextStyle(
@@ -77,13 +84,13 @@ class _DateForViewPageState extends State<AddVacation> {
                 ).then((date) {
                   setState(() {
                     _dateTime = date;
-                    selectedVacationDate = '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}';
+                    selectedVacationDate = '${_dateTime.day}.${_dateTime.month}.${_dateTime.year}';
                     selectedVacationWeekday = _dateTime.weekday;
                   });
                 });
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text(
                 'הוסף חופש',
                 style: TextStyle(
@@ -92,6 +99,7 @@ class _DateForViewPageState extends State<AddVacation> {
               ),
               onPressed: () async {
                 Navigator.pushNamed(context, '/load');
+                if (_dateTime == null) return;
                 // Delete all appointments on the selected day
                 await deleteAppointmentsOnSelectedVacation();
                 await fillAllVacationAppointments();

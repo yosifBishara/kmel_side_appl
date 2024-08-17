@@ -41,7 +41,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   flutter_local_notifications: ^1.4.4
   flutter_local_notifications_platform_interface: ^1.0.1
-  flutter_sms: 1.0.0
+  flutter_sms:
 
 
 dev_dependencies:

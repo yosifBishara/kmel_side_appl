@@ -6,10 +6,13 @@ import 'package:kmel_side_app/home.dart';
 import 'package:kmel_side_app/loading.dart';
 import 'package:kmel_side_app/view_page.dart';
 import 'add_vacation.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(MaterialApp(
     initialRoute: '/home',

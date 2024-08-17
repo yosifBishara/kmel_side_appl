@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:kmel_side_app/constants.dart';
+import 'package:kmel_side_app/firestoreClient.dart';
 
 class CurrentVacations extends StatefulWidget {
   @override
@@ -41,8 +43,8 @@ class _CurrentVacationsState extends State<CurrentVacations> {
             List<QueryDocumentSnapshot> myDocs = snapshot.data.docs;
 
             myDocs.sort((a, b) {
-              List<String> aSplit = a.get('date').split('/'),
-                           bSplit = b.get('date').split('/');
+              List<String> aSplit = a.get('date').split('.'),
+                           bSplit = b.get('date').split('.');
               DateTime aTime = DateTime(int.parse(aSplit[2]), int.parse(aSplit[1]), int.parse(aSplit[0])),
                        bTime = DateTime(int.parse(bSplit[2]), int.parse(bSplit[1]), int.parse(bSplit[0]));
               return aTime.compareTo(bTime);
@@ -82,11 +84,7 @@ class _CurrentVacationsState extends State<CurrentVacations> {
                             IconButton(
                                 tooltip: 'delete vacation',
                                 onPressed: () async {
-                                    await FirebaseFirestore.instance.collection('vacations').doc(document.id).delete();
-                                    QuerySnapshot documents = await FirebaseFirestore.instance.collection('appointments').where('date', isEqualTo: document.get('date')).get();
-                                    for (int i=0 ; i < documents.docs.length ; i++) {
-                                      await FirebaseFirestore.instance.collection('appointments').doc(documents.docs[i].id).delete();
-                                    }
+                                    await fsc.deleteEntireDay(document.get(FireStoreArg.DATE_FIELD));
                                     await FirebaseFirestore.instance.collection('vacations').doc(document.id).delete();
                                 },
                                 icon: Icon(Icons.delete_outline_outlined)
@@ -94,7 +92,7 @@ class _CurrentVacationsState extends State<CurrentVacations> {
                             SizedBox(width: MediaQuery
                                 .of(context)
                                 .size
-                                .width * 0.55,),
+                                .width * 0.4,),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 2, 8, 2),
                               child: Text(
